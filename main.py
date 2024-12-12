@@ -1,5 +1,5 @@
 # ---------------------------------------------------
-VERSION = "10.12.2024"
+VERSION = "12.12.2024"
 # Author: M. Weber
 # ---------------------------------------------------
 # ---------------------------------------------------
@@ -109,6 +109,10 @@ def main() -> None:
         if st.button("Schlagworte"):
             st.session_state.zielformat = "Schlagworte"
             st.session_state.format_prompt = prompts.SCHLAGWORTE
+            st.session_state.search_status = True
+         if st.button("Pressemitteilung"):
+            st.session_state.zielformat = "Pressemitteilung"
+            st.session_state.format_prompt = prompts.PRESSEMITTEILUNG
             st.session_state.search_status = True
 
         sprache = AUSGABE_SPRACHE[st.session_state.ausgabe_sprache_idx]
