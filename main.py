@@ -110,7 +110,7 @@ def main() -> None:
             st.session_state.zielformat = "Schlagworte"
             st.session_state.format_prompt = prompts.SCHLAGWORTE
             st.session_state.search_status = True
-         if st.button("Pressemitteilung"):
+        if st.button("Pressemitteilung"):
             st.session_state.zielformat = "Pressemitteilung"
             st.session_state.format_prompt = prompts.PRESSEMITTEILUNG
             st.session_state.search_status = True
