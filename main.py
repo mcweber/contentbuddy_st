@@ -136,7 +136,7 @@ def main() -> None:
             temperature=0.2,
             question=prompt,
             # history=st.session_state.history,
-            systemPrompt=st.session_state.system_prompt,
+            system_prompt=st.session_state.system_prompt,
             # web_results_str=st.session_state.web_results,
             source_doc_str=st.session_state.eingabe,
             )
