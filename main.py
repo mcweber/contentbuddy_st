@@ -11,24 +11,27 @@ load_dotenv()
 
 # Define Constants ---------------------------------------------------
 VERSION = "20.12.2024"
-
 HEUTE = str(datetime.now().date())
 AUSGABE_SPRACHE = ["DEU", "ENG", "FRA"]
 LLMS = ["gemini", "gpt4o", "gpt4omini", "llama"]
 # LLM = "gemini" # ONLINE: gemini, gpt4o, gpt4omini, llama | LOCAL: llama, mistral
+OUTPUT_FORMATS = ["text", "json"]
 LOCAL = False
 
 # Functions -------------------------------------------------------------
-@st.dialog("Login")
+@st.dialog("Code Eingabe")
 def login_code_dialog() -> None:
-    with st.form(key="code_form"):
-        code = st.text_input(label="Code", type="password")
-        if st.form_submit_button("Enter"):
-            if code == os.environ.get('CODE'):
-                st.session_state.code = True
-                st.rerun()
-            else:
-                st.error("Code is not correct.")
+    code = st.text_input(label="Code", type="password")
+    if st.button("Enter"):
+        stored_code = os.environ.get('CODE')
+        if stored_code is None:
+            st.error("Umgebungsvariable CODE ist nicht gesetzt.")
+        elif code == stored_code:
+            st.success("Code is correct.")
+            st.session_state.code = True
+            st.rerun()
+        else:
+            st.error("Code is not correct.")
 
 # Main -----------------------------------------------------------------
 def main() -> None:
@@ -41,13 +44,14 @@ def main() -> None:
         st.session_state.eingabe: str = ""
         st.session_state.ausgabe: str = ""
         st.session_state.model_idx: int = 0
+        st.session_state.output_format_idx: int = 0
         st.session_state.search_status: bool = False
         st.session_state.system_prompt: str = prompts.get_system_prompt()
         st.session_state.format_prompt: str = ""
         st.session_state.ausgabe_sprache_idx: int = 0
 
     # Authentication ---------------------------------------------------
-    if not st.session_state.code:
+    if st.session_state.code == False:
         login_code_dialog()
 
     # Initialize screen sections -------------------------------------------
@@ -116,7 +120,7 @@ def main() -> None:
                 st.session_state.format_prompt = prompts.get_prompt_by_name(item)
                 st.session_state.search_status = True
 
-        # Choose LLM & Language ---------------------------------------------
+        # Choose LLM & Language & Output Format ---------------------------------------------
         ausgabe_sprache_neu = st.radio("Ausgabe-Sprache", AUSGABE_SPRACHE, index=st.session_state.ausgabe_sprache_idx)
         if ausgabe_sprache_neu != AUSGABE_SPRACHE[st.session_state.ausgabe_sprache_idx]:
             st.session_state.ausgabe_sprache_idx = AUSGABE_SPRACHE.index(ausgabe_sprache_neu)
@@ -125,6 +129,11 @@ def main() -> None:
         model_neu = st.radio("Modell", LLMS, index=st.session_state.model_idx)
         if model_neu != LLMS[st.session_state.model_idx]:
             st.session_state.model_idx = LLMS.index(model_neu)
+            st.rerun()
+
+        output_neu = st.radio("Output", OUTPUT_FORMATS, index=st.session_state.output_format_idx)
+        if output_neu != OUTPUT_FORMATS[st.session_state.output_format_idx]:
+            st.session_state.output_format_idx = OUTPUT_FORMATS.index(output_neu)
             st.rerun()
 
     # Execute Search & Display Ausgabe -------------------------------------------
@@ -142,7 +151,10 @@ def main() -> None:
             )
         
         with container_right:
-            st.write(st.session_state.ausgabe)
+            if OUTPUT_FORMATS[st.session_state.output_format_idx] == "json":
+                st.json(st.session_state.ausgabe)
+            else:
+                st.write(st.session_state.ausgabe)
         
         st.session_state.search_status = False
 
