@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Version: 14.12.2024
+# Version: 20.12.2024
 # ------------------------------------------------------------------------------
 
 
@@ -52,7 +52,18 @@ PROMPTS = {
         um erfolgreich in der Medienlandschaft wahrgenommen zu werden.
 
         Schreibe eine Pressemitteilung entsprechend dieser Vorgaben.
-        """
+        """,
+    "Karteikarten": """
+        Deine Aufgabe ist es, Karteikarten zu erstellen, die dabei helfen, die wichigsten Informationen
+        aus den beigefügten Dokumenten zu lernen und zu behalten.
+        Die Karteikarten bestehen jeweils aus einer Frage und einer Antwort.
+        Das Ausgabeformat ist wie folgt:
+        [
+        {Frage: [Frage], Antwort: [Antwort]},
+        {Frage: [Frage], Antwort: [Antwort]},
+        ...
+        ]
+        """,
     }
 
 # Def functions --------------------------------------------------------------
