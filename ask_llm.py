@@ -3,7 +3,11 @@
 # Author: M. Weber
 # ---------------------------------------------------
 # 30.08.2024 switched to class-based approach
-# 12.10.2023 added source documents
+# 12.10.2024 added source documents
+# ---------------------------------------------------
+# Description:
+# llm: gpt4o, gpt4omini, llama, gemini
+# local: True/False
 # ---------------------------------------------------
 
 from datetime import datetime
@@ -14,17 +18,17 @@ import psutil
 import openai
 import google.generativeai as gemini
 from groq import Groq
-# import ollama
+import ollama
 
 # Define class ---------------------------------------------------
 class LLMHandler:
-    def __init__(self, llm: str = "gpt4omini", local: bool = False):
+    def __init__(self, llm: str = "gemini", local: bool = False):
         self.LLM = llm
         self.LOCAL = local
         load_dotenv()
 
         if self.LLM == "gpt4o" or self.LLM == "gpt4omini":
-            self.openaiClient = openai.OpenAI(api_key=os.environ.get('OPENAI_API_KEY_DVV'))
+            self.openaiClient = openai.OpenAI(api_key=os.environ.get('OPENAI_API_KEY_PRIVAT'))
         elif self.LLM == "llama":
             self.groqClient = Groq(api_key=os.environ.get('GROQ_API_KEY_PRIVAT'))
         elif self.LLM == "gemini":

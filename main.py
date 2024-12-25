@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Define Constants ---------------------------------------------------
-VERSION = "20.12.2024"
+VERSION = "25.12.2024"
 HEUTE = str(datetime.now().date())
 AUSGABE_SPRACHE = ["DEU", "ENG", "FRA"]
 LLMS = ["gemini", "gpt4o", "gpt4omini", "llama"]
