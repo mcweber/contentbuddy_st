@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Version: 20.12.2024
+# Version: 15.01.2025
 # ------------------------------------------------------------------------------
 
 
@@ -17,7 +17,7 @@ SYSTEM_PROMPT = """
     """
 
 PROMPTS = {
-    "Fachartikel": """
+    "Zusammenfassung": """
         Schreibe einen Fachartikel, der die beigefügten Dokumente strukturiert zusammenfasst.
         Beginne mit einem inhaltlichen Überblick und fasse die wichtigsten Punkte zusammen.
         """,

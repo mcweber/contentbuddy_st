@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Define Constants ---------------------------------------------------
-VERSION = "25.12.2024"
+VERSION = "15.01.2025"
 HEUTE = str(datetime.now().date())
 AUSGABE_SPRACHE = ["DEU", "ENG", "FRA"]
 LLMS = ["gemini", "gpt4o", "gpt4omini", "llama"]
@@ -23,12 +23,16 @@ LOCAL = False
 def login_code_dialog() -> None:
     code = st.text_input(label="Code", type="password")
     if st.button("Enter"):
-        stored_code = os.environ.get('CODE')
-        if stored_code is None:
-            st.error("Umgebungsvariable CODE ist nicht gesetzt.")
-        elif code == stored_code:
-            st.success("Code is correct.")
-            st.session_state.code = True
+        CODE1 = os.environ.get('CODE1')
+        CODE2 = os.environ.get('CODE2')
+        CODE3 = os.environ.get('CODE3')
+        if code == CODE1:
+            st.session_state.code = "PRIVAT"
+            st.session_state.model_idx = 0 # LLM: gemini
+            st.rerun()
+        elif code in [CODE2, CODE3]:
+            st.session_state.code = "DVV"
+            st.session_state.model_idx = 1 # LLM: gpt4o
             st.rerun()
         else:
             st.error("Code is not correct.")
@@ -40,7 +44,7 @@ def main() -> None:
     # Initialize Session State -----------------------------------------
     if 'init' not in st.session_state:
         st.session_state.init: bool = True
-        st.session_state.code: bool = False
+        st.session_state.code: str = ""
         st.session_state.eingabe: str = ""
         st.session_state.ausgabe: str = ""
         st.session_state.model_idx: int = 0
@@ -51,17 +55,17 @@ def main() -> None:
         st.session_state.ausgabe_sprache_idx: int = 0
 
     # Authentication ---------------------------------------------------
-    if st.session_state.code == False:
+    if st.session_state.code == "":
         login_code_dialog()
 
     # Initialize screen sections -------------------------------------------
     st.subheader("ContentBuddy")
 
-    col_left, col_mid, col_right = st.columns([4, 1, 4])
+    col_left, col_mid, col_right = st.columns([4, 2, 4])
 
-    container_left = col_left.container(border=True, height=800)
-    container_mid = col_mid.container(border=True, height=800)
-    container_right = col_right.container(border=True, height=800)
+    container_left = col_left.container(border=True, height=850)
+    container_mid = col_mid.container(border=True, height=850)
+    container_right = col_right.container(border=True, height=850)
 
     with container_left:
         st.subheader("EINGABE")
@@ -104,13 +108,6 @@ def main() -> None:
         if eingabe_text != value_text:
             st.session_state.eingabe = eingabe_text
 
-        # Reset Button ------------------------------------------------------
-        if st.button("Reset"):
-            st.session_state.eingabe = ""
-            st.session_state.ausgabe = ""
-            st.session_state.schlagworte = ""
-            st.rerun()
-
     # Define Parameter Form ----------------------------------------------
     with container_mid:
 
@@ -126,14 +123,22 @@ def main() -> None:
             st.session_state.ausgabe_sprache_idx = AUSGABE_SPRACHE.index(ausgabe_sprache_neu)
             st.rerun()
 
-        model_neu = st.radio("Modell", LLMS, index=st.session_state.model_idx)
-        if model_neu != LLMS[st.session_state.model_idx]:
-            st.session_state.model_idx = LLMS.index(model_neu)
-            st.rerun()
+        if st.session_state.code == "PRIVAT":
+            model_neu = st.radio("Modell", LLMS, index=st.session_state.model_idx)
+            if model_neu != LLMS[st.session_state.model_idx]:
+                st.session_state.model_idx = LLMS.index(model_neu)
+                st.rerun()
 
         output_neu = st.radio("Output", OUTPUT_FORMATS, index=st.session_state.output_format_idx)
         if output_neu != OUTPUT_FORMATS[st.session_state.output_format_idx]:
             st.session_state.output_format_idx = OUTPUT_FORMATS.index(output_neu)
+            st.rerun()
+
+        # Reset Button ------------------------------------------------------
+        if st.button("Reset"):
+            st.session_state.eingabe = ""
+            st.session_state.ausgabe = ""
+            st.session_state.schlagworte = ""
             st.rerun()
 
     # Execute Search & Display Ausgabe -------------------------------------------
